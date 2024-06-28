@@ -66,12 +66,16 @@ products.forEach((prod) => {
     tableBodyHTML.innerHTML += `<tr>
 <td class="product-img"><img src="${prod.image}" alt="nike"></td>
 <td class="product-name">${prod.name}</td>
-<td class="product-description">${prod.description}</td>
+<td class="product-description">
+    <div class="description" title="${prod.description}">
+        ${prod.description}
+    </div>
+</td>
 <td class="product-date">${prod.createdAt}</td>
 <td class="product-price">${prod.price}0.00</td>
 <td class="product-actions">
-    <button class="btn btn-primary btn-sm">Editar</button>
-    <button class="btn btn-danger btn-sm">Eliminar</button>
+    <button class="btn btn-primary btn-sm"><i class="fa-solid fa-pen"></i></button>
+    <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
 </td>
 </tr>`
 
