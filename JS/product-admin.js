@@ -1,7 +1,7 @@
 const products = [
     {
         createdAt: -172800000,
-        name: "Nike Juniper Trail 2 GORE-TEX",
+        name: "Nike Juniper Trail 2 GORE-TEX PRO",
         image: "https://nikearprod.vtexassets.com/arquivos/ids/877894-1200-1200?width=1200&height=1200&aspect=true",
         price: 199999,
         description: "The slim & simple Maple Gaming Keyboard from Dev Byte comes with a sleek body and 7- Color RGB LED Back-lighting for smart functionality",
@@ -19,7 +19,7 @@ const products = [
     },
     {
         createdAt: 1716076800000,
-        name: "Nike Invencible 3",
+        name: "Nike Invencible 3 Pro",
         image: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/28810afe-6b6a-4f6a-beb4-701a3539bb02/invincible-3-zapatillas-de-running-asfalto-9lqlcK.png",
         price: 365100,
         description: "Test de imagenmmmmmm",
@@ -56,29 +56,137 @@ const products = [
 ]
 
 const tableBodyHTML = document.getElementById("table-body")
+const formAdminHTML = document.getElementById("form-admin")
 
-console.log(tableBodyHTML)
+//Pintar todos los productos inicialmente
+
+renderProducts(products)
+
+function renderProducts(ARRAY_TO_RENDER) {
+
+    tableBodyHTML.innerHTML = '';
+
+    let total = 0;
+
+
+    ARRAY_TO_RENDER.forEach((prod) => {
+
+        total += prod.price
+        tableBodyHTML.innerHTML += `<tr>
+    <td class="product-img"><img src="${prod.image}" alt="${prod.name}"></td>
+    <td class="product-name">${prod.name}</td>
+    <td class="product-description">
+        <div class="description" title="${prod.description}">
+            ${prod.description}
+        </div>
+    </td>
+    <td class="product-date">${formatTimestampToDate(prod.createdAt)}</td>
+    <td class="product-price">S/. ${prod.price}.00</td>
+    <td class="product-actions">
+        <button class="btn btn-primary btn-sm">
+        <i class="fa-solid fa-pen">
+        </i></button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct('${prod.id}')">
+        <i class="fa-solid fa-trash">
+        </i></button>
+    </td>
+    </tr>`
+
+    }) // Fin del forEach
+
+    tableBodyHTML.innerHTML+= `<tr>
+    <td colspan ="4" class="text-end">TOTAL</td>
+    <td colspan ="2" class="fw-bold">S/. ${total}.00</td>
+    </tr>`
+}
 
 // Recorrer el array y hacer un console.log de cada producto
 
-products.forEach((prod) => {
 
-    tableBodyHTML.innerHTML += `<tr>
-<td class="product-img"><img src="${prod.image}" alt="nike"></td>
-<td class="product-name">${prod.name}</td>
-<td class="product-description">
-    <div class="description" title="${prod.description}">
-        ${prod.description}
-    </div>
-</td>
-<td class="product-date">${prod.createdAt}</td>
-<td class="product-price">${prod.price}0.00</td>
-<td class="product-actions">
-    <button class="btn btn-primary btn-sm"><i class="fa-solid fa-pen"></i></button>
-    <button class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
-</td>
-</tr>`
+//llamar una funcion especifica para borrar productos
 
+function deleteProduct(identificador) {
+
+    //obtener el id del producto a eliminar
+
+    console.log("Id recibido", identificador)
+
+    //Porder identificar el indice de producto a eliminar a traves de un metodo.
+
+    const index = products.findIndex(producto => {
+
+        if (identificador === producto.id) {
+            return true
+        } else {
+            false
+        }
+    })
+
+    //Eliminar el producto del array con splice en base a su ubicacion // Array.splice (indice, 1) -> Elimina un elemento array
+    products.splice(index, 1)
+
+    renderProducts(products)
+
+}
+
+// #Search PRODUCT
+
+
+function searchProduct(evt) {
+    console.log(evt.target.value)
+
+    let text = evt.target.value.toLowerCase();
+
+
+    const filterProduct = products.filter((productito) => {
+
+        const name = productito.name.toLowerCase();
+        const descripcion = productito.description.toLowerCase();
+
+        if (name.includes(text) || descripcion.includes(text)) {
+            return true
+        }
+
+    })
+
+    renderProducts(filterProduct)
+
+}
+
+
+formAdminHTML.addEventListener('submit', (evt) => {
+    //prevenir su comportamiento por defecto del formulario
+    evt.preventDefault();
+
+    const elem = evt.target.elements;
+
+    console.log(elem.date.value)
+
+    const nuevoProducto = {
+        name: elem.name.value,
+        // price: +elem.price.value,
+        price: elem.price.valueAsNumber,
+        category: elem.category.vale,
+        description: elem.description.value,
+        image: elem.image.value,
+        // createdAt: elem.date.valueAsNumber,
+        createdAt: new Date(elem.date.value).getTime(),
+        id: crypto.randomUUID()
+    }
+    console.log(nuevoProducto)
+
+    products.push(nuevoProducto)
+
+    renderProducts(products)
+
+    formAdminHTML.reset();
+    elem.name.focus()
+
+
+})
+
+formAdminHTML.addEventListener('change', () => {
+    console.log(formAdminHTML.checkVisibility())
 })
 
 /*<tr>
