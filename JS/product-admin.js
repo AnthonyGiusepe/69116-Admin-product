@@ -83,7 +83,7 @@ function renderProducts(ARRAY_TO_RENDER) {
     <td class="product-date">${formatTimestampToDate(prod.createdAt)}</td>
     <td class="product-price">S/. ${prod.price}.00</td>
     <td class="product-actions">
-        <button class="btn btn-primary btn-sm">
+        <button class="btn btn-primary btn-sm" onclick="editProduct('${prod.id}')">
         <i class="fa-solid fa-pen">
         </i></button>
         <button class="btn btn-danger btn-sm" onclick="deleteProduct('${prod.id}')">
@@ -189,14 +189,27 @@ formAdminHTML.addEventListener('change', () => {
     console.log(formAdminHTML.checkVisibility())
 })
 
-/*<tr>
-<td class="product-img"><img src="https://static.nike.com/a/images/t_default/28810afe-6b6a-4f6a-beb4-701a3539bb02/invincible-3-zapatillas-de-running-asfalto-9lqlcK.png" alt="nike"></td>
-<td class="product-name">Zapatillas Nike</td>
-<td class="product-description">Para correr en asfalto con tecnolgia de amortiguacion.</td>
-<td class="product-date">2024-05-01</td>
-<td class="product-price">S/ 500.00</td>
-<td class="product-actions">
-    <button class="btn btn-primary btn-sm">Editar</button>
-    <button class="btn btn-danger btn-sm">Eliminar</button>
-</td>
-</tr>*/
+function editProduct(idUpdate){
+
+    console.log("Id para actualizar", idUpdate)
+
+    const productoEdit = products.find(producto => {
+        if(idUpdate === producto.id){
+            return true
+        }
+    })
+
+    const elem = formAdminHTML.elements;
+
+    elem.name.value = productoEdit.name;
+    elem.price.value = productoEdit.price;
+    elem.description.value = productoEdit.description;
+    elem.category.value = productoEdit.category;
+    elem.image.value = productoEdit.image;
+
+    elem.createdAt.value = formatTimestampToInputDate(productoEdit.createdAt)
+
+}
+
+
+
