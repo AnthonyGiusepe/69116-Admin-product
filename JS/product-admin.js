@@ -55,8 +55,24 @@ const products = [
     }
 ]
 
+let isEditing = false
+
 const tableBodyHTML = document.getElementById("table-body")
 const formAdminHTML = document.getElementById("form-admin")
+const btnSubmitHTML = document.querySelector("button[type='submit']")
+const btnsSortHTML = document.querySelectorAll("button[data-sort]")
+
+btnsSortHTML.forEach(btn =>{
+    btn.addEventListener('click', (e) =>{
+        products.sort((a, b) => {
+            if(a.name > b.name) return 1;
+            if(a.name < b.name) return -1;
+            return 0;
+        })
+
+        renderProducts(products)
+    })
+})
 
 //Pintar todos los productos inicialmente
 
@@ -94,7 +110,7 @@ function renderProducts(ARRAY_TO_RENDER) {
 
     }) // Fin del forEach
 
-    tableBodyHTML.innerHTML+= `<tr>
+    tableBodyHTML.innerHTML += `<tr>
     <td colspan ="4" class="text-end">TOTAL</td>
     <td colspan ="2" class="fw-bold">S/. ${total}.00</td>
     </tr>`
@@ -110,6 +126,12 @@ function deleteProduct(identificador) {
     //obtener el id del producto a eliminar
 
     console.log("Id recibido", identificador)
+
+    const resultado = confirm("Realmente desea borrar el producto")
+
+    if (!resultado){
+        return
+    }
 
     //Porder identificar el indice de producto a eliminar a traves de un metodo.
 
@@ -162,26 +184,50 @@ formAdminHTML.addEventListener('submit', (evt) => {
 
     console.log(elem.date.value)
 
+    const idInput = elem.id.value;
+
+    // const ID = id ? id : crypto.randomUUID()
+
     const nuevoProducto = {
         name: elem.name.value,
+
         // price: +elem.price.value,
-        price: elem.price.valueAsNumber,
+        price: elem.price.valueAsNumber || 0,
+
         category: elem.category.vale,
         description: elem.description.value,
         image: elem.image.value,
         // createdAt: elem.date.valueAsNumber,
         createdAt: new Date(elem.date.value).getTime(),
-        id: crypto.randomUUID()
+        id: idInput ? id : crypto.randomUUID()
     }
+
     console.log(nuevoProducto)
 
-    products.push(nuevoProducto)
+    if (idInput) {
+        // const index = products.findIndex(prod => prod.id === id);
+
+        const indice = products.findIndex(prod => {
+            if (id === prod.id) {
+                return true
+            }
+        });
+
+        products[indice] = nuevoProducto
+
+    } else {
+        products.push(nuevoProducto)
+    }
+
+    elem.id.value = ''
 
     renderProducts(products)
 
     formAdminHTML.reset();
     elem.name.focus()
 
+    btnSubmitHTML.innerText = "Agregar";
+    btnSubmitHTML.classList.remove("btn-success")
 
 })
 
@@ -189,24 +235,39 @@ formAdminHTML.addEventListener('change', () => {
     console.log(formAdminHTML.checkVisibility())
 })
 
-function editProduct(idUpdate){
+function editProduct(idUpdate) {
 
     console.log("Id para actualizar", idUpdate)
 
     const productoEdit = products.find(producto => {
-        if(idUpdate === producto.id){
+        if (idUpdate === producto.id) {
             return true
         }
     })
 
+    //Pintar y modificar btn
+
+    btnSubmitHTML.innerHTML = "Editar Producto"
+    btnSubmitHTML.classList.add('btn-success')
+
+
+
     const elem = formAdminHTML.elements;
+    //rellenar el formulario con esos datos
+
+    elem.id.value = productoEdit.id
 
     elem.name.value = productoEdit.name;
+
     elem.price.value = productoEdit.price;
+
     elem.description.value = productoEdit.description;
+
     elem.category.value = productoEdit.category;
+
     elem.image.value = productoEdit.image;
 
+    //transformamos el formato timestamp milisegundos a un formato createdAt.
     elem.createdAt.value = formatTimestampToInputDate(productoEdit.createdAt)
 
 }

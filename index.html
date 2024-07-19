@@ -36,13 +36,14 @@
                 <div class="p-3">
                     <h2>FORMULARIO</h2>
                     <form class="w-100 px-2" id="form-admin">
+                        <input type="hidden" name="id">
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre producto</label>
-                            <input type="text" name="name" id="name" class="form-control" placeholder="Agregar Nombre">
+                            <input type="text" name="name" id="name" class="form-control" minlength="3" placeholder="Agregar Nombre">
                         </div>
                         <div class="mb-3">
                             <label for="price" class="price form-label">Ingrese Precio</label>
-                            <input type="number" name="price" id="price" class="form-control">
+                            <input type="number" min="1" name="price" id="price" class="form-control" required>
                         </div>
                         <div class="row mb-3">
                             <div class="col-5">
@@ -76,11 +77,26 @@
                 <div class="p-3">
                     <h2>TABLA DE PRODUCTOS</h2>
 
-                    <div class="mb-3">
+                    <div class="row d-flex align-items-end mb-3">
+                        <div class="col-10">
 
-                        <label for="search" class="form-label">Buscar</label>
-                        <input type="text" class="form-control" oninput="searchProduct(event)">
+                                <label for="search" class="form-label">Buscar</label>
+                                <input type="text" class="form-control" oninput="searchProduct(event)">
+
+                        </div>
+                        <div class="col-2 text-end">
+
+                            <button class="btn btn-primary" data-sort="desc">
+                                <i class="fa-solid fa-caret-down"></i>
+                            </button>
+
+                            <button class="btn btn-primary" data-sort="asc">
+                                <i class="fa-solid fa-caret-up"></i>
+                            </button>
+
+                        </div>
                     </div>
+
 
                     <div class="table-container">
                         <table class="table table-primary table-admin">
